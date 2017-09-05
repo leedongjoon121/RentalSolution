@@ -46,8 +46,20 @@
 <br/>    
 <p>카카오 스토리 공유하기</p>    
 <div id="kakaostory-share-button"></div>    
-<script type='text/javascript'>
 
-</script>    
+<br/>
+<p>네이버 로그인</p>
+<div id="naver_id_login"></div>    
+<script>
+
+    var naver_id_login = new naver_id_login("iWOonPKbNSET8UJd3l3h", "https://leedongjoon121.github.io/Javascript_Study/");
+  	var state = naver_id_login.getUniqState();
+  	naver_id_login.setButton("white", 2,40);
+  	naver_id_login.setDomain("https://leedongjoon121.github.io/RentalSolution/");
+  	naver_id_login.setState(state);
+  	naver_id_login.setPopup();
+  	naver_id_login.init_naver_id_login();
+   
+</script>         
 </body>
 </html>
