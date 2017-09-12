@@ -5,16 +5,25 @@
 <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width"/>
 <title>API </title>
     
+<!-- share css -->
+ <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+html,body,h1,h2,h3,h4 {font-family:"Lato", sans-serif}
+.mySlides {display:none}
+.w3-tag, .fa {cursor:pointer}
+.w3-tag {height:15px;width:15px;padding:0;margin-top:6px}
+</style>	
+	
+	
    <!--부트 스트랩 --> 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    
-    
-   <!-- 네이버 api --> 
-  <script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
-  <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>   
-    
+      
     
     <!-- 카카오 url-->
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>    
@@ -44,230 +53,46 @@
     Kakao.Story.createShareButton({
       container: '#kakaostory-share-button',
       url: 'https://developers.kakao.com',
-      text: '카카오 개발자 사이트로 놀러오세요! #개발자 #카카오 :)'
+      text: '웅진 렌탈 테스트중~~~~~~~~~~~~~~~~~~~~~ :)'
     });
   }
 </script>    
     
-<script>
-  function share() {
-      var url = encodeURI(encodeURIComponent(myform.url.value));
-      var title = encodeURI(myform.title.value);
-      var shareURL = "http://share.naver.com/web/shareView.nhn?url=" + url + "&title=" + title;
-      document.location = shareURL;
-    }
-</script>
+
     
-    <style>
-        #naver_id_login{
-          margin-left:400px;
-          margin-bottom:100px;   
-        }
-        #naver_share_form{
-        margin-left:400px;
-        margin-buttom:100px;
-        }
-    </style>   
+
 </head>
 <body>
      
-<div class="jumbotron text-center">
+<div class="w3-content" style="max-width:1100px;margin-top:80px;margin-bottom:80px">
   <h1>웅진 Rental Soultion 인증 API 테스트</h1>
   <h3>웅진 인턴 이동준</h3>  
   <p>각종 api를 이용합니다. 현재는 회사 보안관련 문제로 깃허브 호스팅 url로 서비스 루트를 잡아놓았습니다. </p> 
-</div>
 
-<div class = "container">    
-  <div class="row">
-      
-<div class = "col-sm-6">    
-<p>카카오 계정으로 로그인 </p>    
-<a id="kakao-login-btn"></a>
-</div>
-
-<div class = "col-sm-6">      
-<p>카카오 스토리 공유하기</p>    
-<div id="kakaostory-share-button"></div>    
-</div>
+ <div class="w3-col l3 m6 w3-light-grey w3-container w3-padding-16">
+ <div class="container">
+  <div class="form-group">     
+  <form id = "login_form" action="https://leedongjoon121.github.io/Javascript_Study/">    
+    아이디 : <input type = "text" id="id_val" class="form-control">
+   
+    <br/>
     
-
-      
-      
-</div>    
-</div>
-    
-  
-
-<!-- 페이스북 api -->    
-<script>
-   function statusChangeCallback(response) {
-    console.log('statusChangeCallback');
-    console.log(response);
-    // The response object is returned with a status field that lets the
-    // app know the current login status of the person.
-    // Full docs on the response object can be found in the documentation
-    // for FB.getLoginStatus().
-    if (response.status === 'connected') {
-      // Logged into your app and Facebook.
-      testAPI();
-    } else {
-      // The person is not logged into your app or we are unable to tell.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into this app.';
-    }
-  } 
-    
-  function checkLoginState() {
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
-} 
-    
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '1888357418149769',
-      cookie     : true,
-      xfbml      : true,
-      version    : 'v2.10'
-    });
- 
-   FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-});    
-      
-};
-
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "//connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-    
-    
- function testAPI() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
-      console.log('Successful login for: ' + response.name);
-      document.getElementById('status').innerHTML =
-        'Thanks for logging in, ' + response.name + '!';
-    });
-  }
-    
-</script>    
-
-
-<br/>
-    
-<hr/>
-    
-
-	
-<div class = "container">    
-  <div class="row">    
-<div class = "col-sm-4"> 
-	
-<p>페이스북 로그인!!</p>    
-    
-<fb:login-button 
-  scope="public_profile,email"
-  onlogin="checkLoginState();">
-</fb:login-button>
-	
-<div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>	
-    
-<div id="status"></div>
-	
-</div> <!-- col-sm -->
-        
-<div class = "col-sm-4">        
- <p> 페이스북 링크 공유하기~~</p>   
- <div id="shareBtn" class="btn btn-success clearfix">페북공유하기</div>
- </div> <!-- col-sm -->
-
-<div class = "col-sm-4">
-<p>좋아요</p>	
-<div
-  class="fb-like"
-  data-share="true"
-  data-width="450"
-  data-show-faces="true"></div>
-</div>	  <!-- col-sm -->
-	  
-</div>	  <!-- row -->
-</div> <!-- container -->
-	    
-<br/>
-<hr/>
-	
-<script>
-document.getElementById('shareBtn').onclick = function() {
-  FB.ui({
-    method: 'share',
-    display: 'popup',
-    href: 'https://developers.facebook.com/docs/',
-  }, function(response){});
-}
-</script>    
-
- <br/>
- <br/>   
-
-<div id="naver_id_login"></div>
-<script>
-
-    var naver_id_login = new naver_id_login("iWOonPKbNSET8UJd3l3h", "https://leedongjoon121.github.io/Javascript_Study/");
-  	var state = naver_id_login.getUniqState();
-  	naver_id_login.setButton("white", 2,40);
-  	naver_id_login.setDomain("https://leedongjoon121.github.io/RentalSolution/");
-  	naver_id_login.setState(state);
-  	naver_id_login.setPopup();
-  	naver_id_login.init_naver_id_login();
-  
-</script>        
-
-   <div class="container"  id = "naver_share_form">    
- <form id="myform">
-     <div class="form-group">
-    URL입력:  <input type="text"  class="form-control"  id="url" value="https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&oquery=%EB%84%A4%EC%9D%B4%EB%B2%84+%EA%B0%9C%EB%B0%9C%EC%9E%90%EC%84%BC%ED%84%B0&ie=utf8&query=%EB%84%A4%EC%9D%B4%EB%B2%84+%EA%B0%9C%EB%B0%9C%EC%9E%90%EC%84%BC%ED%84%B0"><br/>
-    Title입력:  <input type="text"  class="form-control"  id="title" value="네이버개발자센터 검색결과"><br/>
-     </div>
+    비밀번호 : <input type = "text" id="pw_val" class="form-control">
+    <br/>
+    <input type="submit" value= "로그인" class="btn btn-info"/>
   </form>
-  <input type="button"  class="btn btn-info"  value="네이버공유하기" onclick="share()"/>    
-    </div>
-    
-  <!-- 트위터 api -->  
- <script>window.twttr = (function(d, s, id) {
-	  var js, fjs = d.getElementsByTagName(s)[0],
-	    t = window.twttr || {};
-	  if (d.getElementById(id)) return;
-	  js = d.createElement(s);
-	  js.id = id;
-	  js.src = "https://platform.twitter.com/widgets.js";
-	  fjs.parentNode.insertBefore(js, fjs);
+   </div>
+  </div>  
+ </div>    
+  
 
-	  t._e = [];
-	  t.ready = function(f) {
-	    t._e.push(f);
-	  };
+<center>  
+<a id="kakao-login-btn"></a>
+</center>
+     
+ </div>     
 
-	  return t;
-	}(document, "script", "twitter-wjs"));
-
-</script>
  
-<br/>
-<br/>	
-<hr/>
-	
-<div style="float:left; width:20%; margin-left:400px;">somethings</div>
-		
- <a class="twitter-share-button"
-  href="https://twitter.com/intent/tweet?text=Hello%20world"
-  data-size="large" style="float:left; width:40%;">  
-
-	
 
 </body>
 </html>
