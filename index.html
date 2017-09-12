@@ -24,7 +24,12 @@ html,body,h1,h2,h3,h4 {font-family:"Lato", sans-serif}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
       
+      <!-- 네이버 api --> 
+  <script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>   
     
+	
+	
     <!-- 카카오 url-->
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>    
 <script>
@@ -66,9 +71,10 @@ html,body,h1,h2,h3,h4 {font-family:"Lato", sans-serif}
      
 <div class="w3-content" style="max-width:1100px;margin-top:80px;margin-bottom:80px">
   <h1>웅진 Rental Soultion 인증 API 테스트</h1>
-  <h3>웅진 인턴 이동준</h3>  
+  <h3>웅진 인턴 이동준</h3> 
+	<p>현재 모바일사이즈로 변경중입니다. 웹으로보면 깨집니다, iphone6기준!!!!!!!!!!!!</p>	
   <p>각종 api를 이용합니다. 현재는 회사 보안관련 문제로 깃허브 호스팅 url로 서비스 루트를 잡아놓았습니다. </p> 
-
+   
  <div class="w3-col l3 m6 w3-light-grey w3-container w3-padding-16">
  <div class="container">
   <div class="form-group">     
@@ -88,6 +94,21 @@ html,body,h1,h2,h3,h4 {font-family:"Lato", sans-serif}
 
 <center>  
 <a id="kakao-login-btn"></a>
+	
+	
+
+<div id="naver_id_login"></div>
+<script>
+    var naver_id_login = new naver_id_login("iWOonPKbNSET8UJd3l3h", "https://leedongjoon121.github.io/Javascript_Study/");
+  	var state = naver_id_login.getUniqState();
+  	naver_id_login.setButton("white", 2,40);
+  	naver_id_login.setDomain("https://leedongjoon121.github.io/RentalSolution/");
+  	naver_id_login.setState(state);
+  	naver_id_login.setPopup();
+  	naver_id_login.init_naver_id_login();
+  
+</script>        
+	
 </center>
      
  </div>     
