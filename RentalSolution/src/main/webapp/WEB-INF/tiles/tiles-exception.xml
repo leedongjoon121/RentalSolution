@@ -1,0 +1,20 @@
+<!DOCTYPE tiles-definitions PUBLIC 
+  "-//Apache Software Foundation//DTO Tiles Configuration 2.0//EN"
+  "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+  
+<tiles-definitions>
+   <definition name="error.definition" template="/WEB-INF/layout/error.jsp">
+      <put-attribute name="title" value=""/>
+      <put-attribute name="content" value=""/>
+   </definition>
+   
+   <definition name="error/allException" extends="error.definition">
+      <put-attribute name="title" value="allException"/>
+      <put-attribute name="content" value="/WEB-INF/view/error/allException.jsp"/>
+   </definition>
+   
+    <definition name="error/genericException" extends="error.definition">
+      <put-attribute name="title" value="genericException"/>
+      <put-attribute name="content" value="/WEB-INF/view/error/genericException.jsp"/>
+   </definition>
+</tiles-definitions>

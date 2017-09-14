@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="home.homeDao">
+
+<!-- 셀렉트 리스트 -->
+    <select id = "selectList"  parameterType="com.woongjin.home.search.HomeSearch"  resultType="com.woongjin.home.vo.HomeVo">
+          SELECT
+              id AS param1,
+              pw AS param2,
+              name AS param3
+          FROM USER    
+          ORDER BY id
+          limit #{startRowIndex}, #{pagePerRecord}
+    </select>
+ 
+<select id = "selectListCount" parameterType="com.woongjin.home.search.HomeSearch"  resultType="int">
+        SELECT
+            COUNT(*)
+        FROM USER    
+</select> 
+ 
+<!-- 값 한개 셀렉트 -->    
+    <select id = "select" parameterType="java.lang.String" resultType="com.woongjin.home.vo.HomeVo" >
+          SELECT
+              id AS param1,
+              pw AS param2,
+              name AS param3
+          FROM USER
+          WHERE id = #{value}    
+    </select>
+
+<!-- 인서트 -->    
+     <insert parameterType="com.woongjin.home.vo.HomeVo" id = "insert">
+          INSERT INTO USER(
+             id, pw, name
+          )VALUE(
+              #{param1},#{param2},#{param3}
+          )
+    </insert>
+    
+ <!-- 딜리트 -->   
+    <update id = "update" parameterType="com.woongjin.home.vo.HomeVo" >
+          UPDATE USER SET
+             pw = #{param2}
+          WHERE id = #{param1}   
+    </update> 
+   
+ 
+    <delete id = "delete" parameterType="com.woongjin.home.vo.HomeVo" >
+          DELETE FROM USER WHERE id = #{param1}
+    </delete>
+</mapper>

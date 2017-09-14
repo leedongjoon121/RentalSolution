@@ -1,0 +1,40 @@
+<!DOCTYPE tiles-definitions PUBLIC 
+  "-//Apache Software Foundation//DTO Tiles Configuration 2.0//EN"
+  "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+  
+<tiles-definitions>
+   <definition name="base.definition" template="/WEB-INF/layout/layout.jsp">
+      <put-attribute name="title" value=""/>
+      <put-attribute name="header" value="/WEB-INF/layout/header.jsp"/>
+      <put-attribute name="content" value=""/>
+      <put-attribute name="footer" value="/WEB-INF/layout/footer.jsp"/>
+   </definition>
+   
+   <definition name="showMessage" extends="base.definition">
+      <put-attribute name="title" value="Hello"/>
+      <put-attribute name="content" value="/WEB-INF/view/showMessage.jsp"/>
+   </definition>
+   
+   <definition name = "/login/loginForm" template = "/WEB-INF/view/login/loginForm.jsp"/>
+   
+   <definition name="home/list" extends="base.definition">
+      <put-attribute name="title" value="목록"/>
+      <put-attribute name="content" value="/WEB-INF/view/home/list.jsp"/>
+   </definition>
+   
+   
+   <definition name="home/view" extends="base.definition">
+      <put-attribute name="title" value="상세"/>
+      <put-attribute name="content" value="/WEB-INF/view/home/view.jsp"/>
+   </definition>
+   
+   <definition name="home/insertForm" extends="base.definition">
+      <put-attribute name="title" value="등록"/>
+      <put-attribute name="content" value="/WEB-INF/view/home/insertForm.jsp"/>
+   </definition>
+   
+   <definition name="home/updateForm" extends="base.definition">
+      <put-attribute name="title" value="수정"/>
+      <put-attribute name="content" value="/WEB-INF/view/home/updateForms.jsp"/>
+   </definition>
+</tiles-definitions>
