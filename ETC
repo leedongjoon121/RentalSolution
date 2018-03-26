@@ -1,0 +1,414 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<main class="contents" id="contents">
+
+<script type="text/javascript">
+
+window.onhashchange = function() {
+	fn_checkForHash();
+};
+
+$( document ).ready(function() {
+
+	$('#possTab').addClass('active');
+	$('#downTab').removeClass('active');
+	$('#possList').show();
+	$('#downList').hide();
+	//default:보유쿠폰
+	$("#downYn").val('Y');
+
+	//fn_addMonth(1);
+	fn_list(1);
+
+});
+
+$(function() {
+
+	// 보유쿠폰
+	$('#possTab').click(function(e){
+
+		$(this).addClass('active');
+		$('#downTab').removeClass('active');
+		$('#possList').show();
+		$('#downList').hide();
+		//fn_addMonth(1);
+
+		$("#downYn").val('Y');
+		fn_list(1);
+	});
+
+	// 다운로드가능쿠폰
+	$('#downTab').click(function(e){
+
+		$(this).addClass('active');
+		$('#possTab').removeClass('active');
+		$('#possList').hide();
+		$('#downList').show();
+		$('.tabContent').show();
+		//fn_addMonth(1);
+
+		$("#downYn").val('N');
+		fn_list(1);
+
+	});
+
+	// add month
+	$('#month01').click(function(e){
+		fn_addMonth(1);
+	});
+	$('#month02').click(function(e){
+		fn_addMonth(2);
+	});
+	$('#month03').click(function(e){
+		fn_addMonth(3);
+	});
+
+	//조회하기
+	$('.inquiry').click(function(e){
+		fn_list('1');
+	});
+
+
+
+	$('.next').click(function(e){
+		fn_list(parseInt($("#curPage").val())+1);
+		//alert('마지막페이지 입니다.');
+	});
+
+	$('.prev').click(function(e){
+		if($("#curPage").val() == 1){
+			alert('첫페이지 입니다.');
+			//alert('<spring:message code="fail.common.msg" />');
+			return;
+		}else{
+			fn_list(parseInt($("#curPage").val())-1);
+		}
+	});
+
+});
+
+// 검색기간 설정
+function fn_addMonth(month){
+
+	var date = new Date();
+	date.setMonth(date.getMonth() - month);
+	$("#usetltStartDt").datepicker({
+		format: 'yyyy/mm/dd',
+       }).datepicker("setDate", date);
+
+	$("#usetltEndDt").datepicker({
+		format: 'yyyy/mm/dd',
+      	}).datepicker("setDate", new Date());
+}
+
+
+// 리스트 조회
+function fn_list(curPage){
+
+	document.location.hash = '#' + curPage;
+
+	ComUtil.loading();
+
+	$("#curPage").val(curPage);
+
+	$.ajax({
+		 type : "POST"
+		,url  : '/mp/actNbnf/cpn.do'
+		,data : {	pageNo:curPage,
+					downYn:$("#downYn").val(),
+					usetltStartDt:'',
+					usetltEndDt:''
+					//usetltStartDt:$('#usetltStartDt').val(),	<!-- 기간조건 주석요청. 20180222.
+					//usetltEndDt:$('#usetltEndDt').val()
+					}
+		,success : function(result) {
+
+
+			if(result.header.result == 'Y'){
+				//var data = result;//JSON.parse(result);
+				var list = result.list;
+				var common = result.common;
+
+				if($('#downYn').val() == 'Y'){
+					var listName = 'possList';
+				}else{
+					var listName = 'downList';
+				}
+
+				$('#'+listName).empty();
+
+				if(list != null && list.length > 0){
+					$('.noResult').hide();
+
+					var html = '<ul>';
+					var rowCnt = 0;
+					for(var i=0;i<list.length;i++){
+						var item = list[i];
+						if(rowCnt != 0 && rowCnt%3 == 0){
+							html += '</ul><ul>';
+							rowCnt = 0;
+						}
+
+						html += '	<li>';
+
+						if($('#downYn').val() == 'Y' && ValidUtil.nvl(item.cpnUseStsYn,'') == 'Y'){
+							html += '		<div class="couponWrap used">';
+						}else{
+							html += '		<div class="couponWrap">';
+						}
+
+						html += '			<h3>'+ValidUtil.nvl(item.cpnNm,'')+'</h3>';
+						if(ValidUtil.nvl(item.dcSe,'') == 'R'){
+							html += '			<p class="couponSale">' + ValidUtil.nvl(item.cpnAmt,'') + '<spring:message code="cpn.sale.type01" /></p>';//% 할인
+						}else{
+							html += '			<p class="couponSale">' + ValidUtil.nvl(item.cpnAmt,'') + '<spring:message code="cpn.sale.type02" /></p>';//원 할인
+						}
+
+						var dDay = fn_dateDiff(ValidUtil.nvl(item.usetltEndDt,''));
+
+						if($('#downYn').val() == 'Y' && ValidUtil.nvl(item.cpnUseStsYn,'') == 'Y'){
+							html += '			<p class="term">'+ValidUtil.nvl(item.usetltStartDt,'')+' ~ '+ValidUtil.nvl(item.usetltEndDt,'')+' <span class="dDay"><spring:message code="cpn.used" /></span></p>';//사용완료
+						}else{
+							html += '			<p class="term">'+ValidUtil.nvl(item.usetltStartDt,'')+' ~ '+ValidUtil.nvl(item.usetltEndDt,'')+' <span class="dDay">D'+dDay+'</span></p>';
+						}
+
+						// 화면구분
+						if($('#downYn').val() != 'Y'){
+							html += '			<a href="#" class="couponDownload"';
+							html += '				onclick="fn_downLoadCoupon(\''+item.cpnNo+'\');">';
+							html += '					<span>DOWNLOAD</span></a>';
+						}else{
+							if(ValidUtil.nvl(item.cpnUseStsYn,'') == 'Y'){
+								html += '		<p class="txt"><spring:message code="cpn.alert002" /></p>';//이미 사용한 쿠폰입니다.
+							}else{
+								html += '		<p class="txt"><spring:message code="cpn.alert003" /></p>';//사용가능한 쿠폰입니다.
+							}
+						}
+
+						html += '		</div>';
+						html += '	</li>';
+
+						rowCnt++;
+					}
+
+					html += '</ul>';
+
+					$('#'+listName).append(html);
+					$('#totCnt').text(common.totalRecordCount);
+
+					PageUtil.fnPageMakeDisplay(common.totalRecordCount, curPage, $('#paging'), 'fn_list', '9');
+
+				}else{
+					$('#totCnt').text('0');
+					$('#'+listName).hide();
+					$('.noResult').show();
+					if($("#downYn").val() == 'Y'){
+						$('#noResult').html('<spring:message code="cpn.alert004" />');
+					}else{
+						$('#noResult').html('<spring:message code="cpn.alert005" />');
+					}
+
+					$('#paging').hide();
+				}
+
+				ComUtil.unloading();
+			}else{
+				ComUtil.unloading();
+				alert(result.header.msg);
+			}
+
+
+
+		}
+		,error : function() {
+			alert('<spring:message code="fail.common.msg" />');
+			ComUtil.unloading();
+			return false;
+		}
+	});
+}
+
+//이벤트 상세
+function fn_downLoadCoupon(cpnNo){
+
+	$('#hCpnNo').val(cpnNo);
+
+	$.ajax({
+		 type : 'POST'
+		,url  : '/mp/actNbnf/downLoadCoupon.do'
+		,data : $('#cpnForm').serialize()
+		,success : function(result) {
+
+
+			if(result.header.result == 'Y'){
+				alert('<spring:message code="cpn.alert001" />');//쿠폰이 다운로드 되었습니다.
+				//다운로드 완료된 쿠폰 제회하고 리스트 출력
+				fn_list($('#curPage').val());
+			}else{
+				alert(result.header.msg);
+			}
+		}
+		,error : function() {
+			alert('<spring:message code="fail.common.msg" />');
+			return false;
+		}
+	});
+}
+
+//두개의 날짜를 비교하여 차이를 알려준다.
+function fn_dateDiff(endDt) {
+
+	var date = new Date();
+	var endDt = new Date(endDt);
+    if(date.getTime() > endDt.getTime()){
+        var diff = Math.abs(date.getTime() - endDt.getTime());
+        diff = '+' + Math.ceil(diff / (1000 * 3600 * 24));
+
+    }else{
+        var diff = Math.abs(endDt.getTime() - date.getTime());
+        diff = '-' + Math.ceil(diff / (1000 * 3600 * 24));
+    }
+
+    return diff;
+}
+
+
+</script>
+
+<form id="cpnForm" name="cpnForm" action="">
+		<input type="hidden"	id="curPage"	name="curPage"	value="${common.pageNo eq null or common.pageNo eq '' ? 1 : common.pageNo }"/>
+		<input type="hidden"	id="downYn"		name="downYn"	value=""/>
+		<input type="hidden"	id="hCpnNo"		name="cpnNo"	value=""/>
+</form>
+
+	<!--subContentsWrap 컨텐츠 시작 -->
+	<div class="subContentsWrap">
+		<div class="subContents type02">
+			<!-- 컨텐츠 navi -->
+			<div class="stateNav">
+				<ul id="breadcrumb" class="breadcrumb">
+					<li class="path home"><a href="#"><spring:message code="cs.home" /></a></li>
+					<li class="path">
+						<a href="#" class="dropdown_path_btn none"><spring:message code="mp.tit" /></a>
+					</li>
+					<li class="path">
+						<a href="#" class="dropdown_path_btn"><spring:message code='act.bnf' /></a><!-- 활동 및 혜택 -->
+						<ul class="dropdown_path">
+							<li>
+								<a href="/mp/actNbnf/evtPartList.do"><spring:message code='evt.title'  /></a><!-- 이벤트 참여 현황 -->
+							</li>
+							<li class="active">
+								<a href="/mp/actNbnf/cpnList.do"><spring:message code='cpn.title'  /></a><!-- 쿠폰현황 -->
+							</li>
+						</ul>
+					</li>
+					<li class="path">
+						<a href="#" class="dropdown_path_btn none"><spring:message code='cpn.title'  /></a><!-- 쿠폰현황 -->
+					</li>
+				</ul>
+			</div>
+			<!-- 컨텐츠 navi -->
+
+			<!-- 상단 타이틀-->
+			<div class="topSubTitle">
+				<div class="title">
+					<h2><spring:message code="mp.tit" /></h2><!-- 마이페이지 -->
+				</div>
+			</div>
+			<!-- 상단 타이틀-->
+
+			<!-- 컨텐츠영역 시작 -->
+			<div class="contents quickWrap">
+				<h2 class="type02"><spring:message code='cpn.title'  /></h2><!-- 쿠폰현황 -->
+
+				<!--탭메뉴 -->
+				<div>
+					<ul class="tabs">
+						<li id="possTab" class="w598" rel="tab01"><spring:message code='cpn.poss' /></li><!-- 보유쿠폰 -->
+						<li id="downTab" class="w598" rel="tab02"><spring:message code='cpn.download' /></li><!-- 다운로드 가능쿠폰 -->
+					</ul>
+				</div>
+				<!--탭메뉴 -->
+
+				<!--탭내용 -->
+				<div class="tabContentWrap">
+					<!--탭 tab01-->
+					<div id="tab01" class="tabContent">
+						<!--조회-->
+						<!-- 기간조건 주석요청. 20180222.
+						<div class="inquiryWrap">
+							<div class="inquiryBox">
+								<ul>
+									<li class="tit"><spring:message code='evt.sch.prod' /></li>
+									<li class="rMonth">
+										<input name="month" id="month01" required="" type="radio" value="01" class="type02" checked="checked"><label for="month01"><spring:message code='evt.one.mn' /></label>
+									</li>
+									<li class="rMonth">
+										<input name="month" id="month02" required="" type="radio" value="02" class="type02"><label for="month02"><spring:message code='evt.two.mn' /></label>
+									</li>
+									<li class="rMonth">
+										<input name="month" id="month03" required="" type="radio" value="03" class="type02"><label for="month03"><spring:message code='evt.tre.mn' /></label>
+									</li>
+									<li>
+										<div class="calendarWrap">
+											<ul>
+												<li>
+													<div class="calendarBox">
+														<input type="text" name="usetltStartDt" id="usetltStartDt" class="type05 w85" datepicker="" data-trigger="#show-datepicker01" title="날짜 입력"><span id="show-datepicker01" class="cIcon"><a href="#" class="calendar" datepicker></a></span>
+													</div>
+												</li>
+												<li class="divi">
+													<span> ~ </span>
+												</li>
+												<li>
+													<div class="calendarBox">
+														<input type="text" name="usetltEndDt" id="usetltEndDt" class="type05 w85" datepicker="" data-trigger="#show-datepicker02" title="날짜 입력"><span id="show-datepicker02" class="cIcon"><a href="#" class="calendar" datepicker></a></span>
+													</div>
+												</li>
+											</ul>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div class="inquiryBtnArea">
+								<a href="#" class="inquiry"><span><spring:message code='evt.sch' /></span></a>
+							</div>
+						</div>
+						<!--조회-->
+
+						<div class="listTable numline">
+							<div class="num"><spring:message code='evt.tot' />&nbsp;<span id="totCnt"></span> <spring:message code='evt.cnt' /></div>
+
+							<div class="noResult" style="display:none;"><span id="noResult"></span></div>
+
+							<!--보유쿠폰 현황 전체-->
+							<div class="thumListTable" id="possList" style="display:none;">
+							</div>
+							<!--보유쿠폰 현황 전체-->
+
+							<!-- 다운로드가능 쿠폰 현황 전체-->
+							<div class="thumListTable" id="downList" style="display:none;">
+							</div>
+							<!-- 다운로드가능 쿠폰 현황 전체-->
+
+						</div>
+						<!--이벤트 참여 현황 전체-->
+
+						<!-- 페이징 표시 -->
+						<div class="paging" id="paging" style="display:none;">
+						</div>
+						<!-- 페이징 표시 -->
+
+					</div>
+					<!--탭 tab01-->
+				</div>
+				<!--탭내용 -->
+
+			</div>
+			<!-- 컨텐츠영역 끝 -->
+		</div>
+	</div>
+	<!--subContentsWrap 컨텐츠 끝 -->
+
+
+</main>
